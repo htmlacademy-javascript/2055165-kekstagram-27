@@ -1,21 +1,22 @@
-function getRandomIntNumber(min, max){
+function getRandomIntNumber(min, max) {
   if ((!Number.isFinite(min) || !Number.isFinite(max)) || (min < 0 || max < 0)) {
     return NaN;
   }
 
   if (max < min) {
-    const tmp = min;
-    min = max;
-    max = tmp;
+    [min, max] = [max, min];
   }
 
-  return Math.round((min - 0.5) + Math.random() * (max - min + 0.5));
+  return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
-function checkStrMaxLength(string, maxLength) {
+function checkStrLength(string, maxLength) {
+  if (typeof string !== 'string' || !Number.isInteger(maxLength) || maxLength < 0) {
+    return null;
+  }
   return string.length <= maxLength;
 }
 
 getRandomIntNumber(50, 1);
 
-checkStrMaxLength('stringtestlength', 140);
+checkStrLength('teststring', 6);
