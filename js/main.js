@@ -114,5 +114,6 @@ const createPhotoObj = () => {
 };
 
 const testPhotoStorage = Array.from({ length: PHOTOS_COUNT }, createPhotoObj);
+// eslint-disable-next-line no-console
 console.log(testPhotoStorage);
 
