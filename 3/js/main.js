@@ -1,5 +1,14 @@
 const PHOTOS_COUNT = 25;
 const COMMENTS_COUNT = PHOTOS_COUNT * 3;
+const AVATARS_COUNT = 6;
+const MAX_COMMENTS_PER_PHOTO = 4;
+const MAX_SENTENCES_COUNT = 2;
+
+const likesRange = {
+  MIN: 15,
+  MAX: 200
+};
+
 let photoIdCounter = 1;
 
 const NAMES = ['Полина', 'Аиша', 'Юлия', 'София', 'Евдокия', 'Кристина', 'Марк', 'Ксения', 'Мария', 'Герман', 'Даниил', 'Алина',
@@ -47,43 +56,34 @@ function getRandomArrElement(array) {
   return array[getRandomIntNumber(0, array.length - 1)];
 }
 
-function getUniqueId(usedIdArray) {
-  let objId = getRandomIntNumber(100, 1000);
-  while (usedIdArray.includes(objId)) {
-    objId = getRandomIntNumber(100, 1000);
-  }
-  usedIdArray.push(objId);
-  return objId;
+function getUniqueId() {
+  return Math.floor(Date.now() * Math.random());
 }
 
-function createRandomArray(elementsCount, sourceArray) {
+function getRandElementsFromArr(elementsCount, sourceArray) {
 
-  const resultArray = [];
-  for (let i = 1; i <= elementsCount; i++) {
-    let element = getRandomArrElement(sourceArray);
-    while (resultArray.includes(element)) {
-      element = getRandomArrElement(sourceArray);
-    }
-    resultArray.push(element);
+  const resultArr = [];
+
+  for (let i = 0; i < elementsCount; i++) {
+    const element = getRandomArrElement(sourceArray);
+    resultArr.push(element);
   }
-  return resultArray;
+
+  return resultArr;
 }
 
 function createTestCommentsArray(commentsCount) {
 
   const commentArray = [];
-  const tempCommentIdArray = [];
 
   for (let i = 1; i <= commentsCount; i++) {
 
-    const objId = getUniqueId(tempCommentIdArray);
-
-    const sentencesCount = getRandomIntNumber(1, 2);
-    const commentMessage = createRandomArray(sentencesCount, PHRASES).join(' ');
+    const sentencesCount = getRandomIntNumber(1, MAX_SENTENCES_COUNT);
+    const commentMessage = getRandElementsFromArr(sentencesCount, PHRASES).join(' ');
 
     const commentObject = {
-      id: objId,
-      avatar: `img/avatar-${getRandomIntNumber(1, 6)}.svg`,
+      id: getUniqueId(),
+      avatar: `img/avatar-${getRandomIntNumber(1, AVATARS_COUNT)}.svg`,
       message: commentMessage,
       name: getRandomArrElement(NAMES),
     };
@@ -101,19 +101,18 @@ function getUniquePhotoId() {
 const createPhotoObj = () => {
   const photoId = getUniquePhotoId();
 
-  const commentsNumber = getRandomIntNumber(1, 3);
-  const comments = createRandomArray(commentsNumber, testCommentsArray);
+  const commentsNumber = getRandomIntNumber(1, MAX_COMMENTS_PER_PHOTO);
+  const comments = getRandElementsFromArr(commentsNumber, testCommentsArray);
 
   return {
     id: photoId,
     url: `photos/${photoId}.jpg`,
     description: `описание к фотографии ${photoId}.jpg`,
-    likes: getRandomIntNumber(15, 200),
+    likes: getRandomIntNumber(likesRange.MIN, likesRange.MAX),
     comments: comments
   };
 };
 
-const testPhotoStorage = Array.from({ length: PHOTOS_COUNT }, createPhotoObj);
-// eslint-disable-next-line no-console
-console.log(testPhotoStorage);
+const createTestPhotoStorage = () => Array.from({ length: PHOTOS_COUNT }, createPhotoObj);
+createTestPhotoStorage();
 
