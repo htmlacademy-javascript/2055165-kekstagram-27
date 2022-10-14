@@ -4,12 +4,10 @@ const AVATARS_COUNT = 6;
 const MAX_COMMENTS_PER_PHOTO = 4;
 const MAX_SENTENCES_COUNT = 2;
 
-const likesRange = {
+const LIKES_RANGE = {
   MIN: 15,
   MAX: 200
 };
-
-let photoIdCounter = 1;
 
 const NAMES = ['Полина', 'Аиша', 'Юлия', 'София', 'Евдокия', 'Кристина', 'Марк', 'Ксения', 'Мария', 'Герман', 'Даниил', 'Алина',
   'Василиса', 'Степан', 'Анна', 'Ева', 'Андрей', 'Вера', 'Иван', 'Александр', 'Кира', 'Илья', 'Аделина', 'Маргарита', 'Михаил',
@@ -50,7 +48,7 @@ function checkStrLength(string, maxLength) {
 
 checkStrLength('teststring', 6);
 
-const testCommentsArray = createTestCommentsArray(COMMENTS_COUNT);
+const testCommentsArray = createTestCommentsArray(COMMENTS_COUNT, MAX_SENTENCES_COUNT, PHRASES, AVATARS_COUNT, NAMES);
 
 function getRandomArrElement(array) {
   return array[getRandomIntNumber(0, array.length - 1)];
@@ -72,47 +70,29 @@ function getRandElementsFromArr(elementsCount, sourceArray) {
   return resultArr;
 }
 
-function createTestCommentsArray(commentsCount) {
+function createTestCommentsArray(commentsCount, sentencesCount, sentencesArray, avatarsCount, namesArray) {
 
-  const commentArray = [];
-
+  const commentsArray = [];
   for (let i = 1; i <= commentsCount; i++) {
-
-    const sentencesCount = getRandomIntNumber(1, MAX_SENTENCES_COUNT);
-    const commentMessage = getRandElementsFromArr(sentencesCount, PHRASES).join(' ');
-
     const commentObject = {
       id: getUniqueId(),
-      avatar: `img/avatar-${getRandomIntNumber(1, AVATARS_COUNT)}.svg`,
-      message: commentMessage,
-      name: getRandomArrElement(NAMES),
+      avatar: `img/avatar-${getRandomIntNumber(1, avatarsCount)}.svg`,
+      message: getRandElementsFromArr(getRandomIntNumber(1, sentencesCount), sentencesArray).join(' '),
+      name: getRandomArrElement(namesArray),
     };
 
-    commentArray.push(commentObject);
+    commentsArray.push(commentObject);
   }
-  return commentArray;
+  return commentsArray;
 }
 
-function getUniquePhotoId() {
-  return photoIdCounter++;
-}
+const createPhotoObj = (photoId, likesRange, commentsNumber, commentsArray ) => ({
+  id: photoId,
+  url: `photos/${photoId}.jpg`,
+  description: `описание к фотографии ${photoId}.jpg`,
+  likes: getRandomIntNumber(likesRange.MIN, likesRange.MAX),
+  comments: getRandElementsFromArr(commentsNumber, commentsArray)
+});
 
-
-const createPhotoObj = () => {
-  const photoId = getUniquePhotoId();
-
-  const commentsNumber = getRandomIntNumber(1, MAX_COMMENTS_PER_PHOTO);
-  const comments = getRandElementsFromArr(commentsNumber, testCommentsArray);
-
-  return {
-    id: photoId,
-    url: `photos/${photoId}.jpg`,
-    description: `описание к фотографии ${photoId}.jpg`,
-    likes: getRandomIntNumber(likesRange.MIN, likesRange.MAX),
-    comments: comments
-  };
-};
-
-const createTestPhotoStorage = () => Array.from({ length: PHOTOS_COUNT }, createPhotoObj);
+const createTestPhotoStorage = () => Array.from({ length: PHOTOS_COUNT }, (_, index) => createPhotoObj(index + 1, LIKES_RANGE, getRandomIntNumber(1, MAX_COMMENTS_PER_PHOTO), testCommentsArray));
 createTestPhotoStorage();
-
