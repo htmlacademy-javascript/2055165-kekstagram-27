@@ -88,10 +88,9 @@ function createTestCommentsArray(commentsCount, sentencesCount, sentencesArray, 
   return commentsArray;
 }
 
-function getUniquePhotoId() {
-  return photoIdCounter++;
+function getUniquePhotoId(idCounter) {
+  return idCounter++;
 }
-
 
 const createPhotoObj = (photoId, likesRange, commentsNumber, commentsArray ) => ({
   id: photoId,
@@ -101,7 +100,5 @@ const createPhotoObj = (photoId, likesRange, commentsNumber, commentsArray ) => 
   comments: getRandElementsFromArr(commentsNumber, commentsArray)
 });
 
-const createTestPhotoStorage = () => Array.from({ length: PHOTOS_COUNT }, () => createPhotoObj(getUniquePhotoId(), LIKES_RANGE, getRandomIntNumber(1, MAX_COMMENTS_PER_PHOTO), testCommentsArray));
+const createTestPhotoStorage = () => Array.from({ length: PHOTOS_COUNT }, () => createPhotoObj(getUniquePhotoId(photoIdCounter), LIKES_RANGE, getRandomIntNumber(1, MAX_COMMENTS_PER_PHOTO), testCommentsArray));
 createTestPhotoStorage();
-
-
