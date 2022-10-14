@@ -9,8 +9,6 @@ const LIKES_RANGE = {
   MAX: 200
 };
 
-let photoIdCounter = 1;
-
 const NAMES = ['Полина', 'Аиша', 'Юлия', 'София', 'Евдокия', 'Кристина', 'Марк', 'Ксения', 'Мария', 'Герман', 'Даниил', 'Алина',
   'Василиса', 'Степан', 'Анна', 'Ева', 'Андрей', 'Вера', 'Иван', 'Александр', 'Кира', 'Илья', 'Аделина', 'Маргарита', 'Михаил',
   'София', 'Элина', 'Леонид', 'Вадим', 'Ольга', 'Павел', 'Владислав', 'Георгий', 'Вячеслав', 'Дмитрий', 'Милана', 'Тимофей', 'Мила',
@@ -88,10 +86,6 @@ function createTestCommentsArray(commentsCount, sentencesCount, sentencesArray, 
   return commentsArray;
 }
 
-function getUniquePhotoId(idCounter) {
-  return idCounter++;
-}
-
 const createPhotoObj = (photoId, likesRange, commentsNumber, commentsArray ) => ({
   id: photoId,
   url: `photos/${photoId}.jpg`,
@@ -100,5 +94,5 @@ const createPhotoObj = (photoId, likesRange, commentsNumber, commentsArray ) => 
   comments: getRandElementsFromArr(commentsNumber, commentsArray)
 });
 
-const createTestPhotoStorage = () => Array.from({ length: PHOTOS_COUNT }, () => createPhotoObj(getUniquePhotoId(photoIdCounter), LIKES_RANGE, getRandomIntNumber(1, MAX_COMMENTS_PER_PHOTO), testCommentsArray));
+const createTestPhotoStorage = () => Array.from({ length: PHOTOS_COUNT }, (_, index) => createPhotoObj(index + 1, LIKES_RANGE, getRandomIntNumber(1, MAX_COMMENTS_PER_PHOTO), testCommentsArray));
 createTestPhotoStorage();
