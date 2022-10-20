@@ -24,5 +24,3 @@ photoMocks.forEach((mock) => {
 });
 
 picsGalleryElement.append(picturesGalleryFragment);
-
-
