@@ -1,3 +1,1 @@
-import {createPhotoMocksArray} from './photo-mocks.js';
-
-createPhotoMocksArray();
+import './thumbnails.js';
