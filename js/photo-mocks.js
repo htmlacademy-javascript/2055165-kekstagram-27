@@ -1,4 +1,4 @@
-import {getUniqueId, getRandomIntNumber, getRandomArrElement, getRandElementsFromArr} from './utils.js';
+import { getUniqueId, getRandomIntNumber, getRandomArrElement, getRandElementsFromArr } from './utils.js';
 
 const PHOTOS_COUNT = 25;
 const COMMENTS_COUNT = PHOTOS_COUNT * 3;
@@ -25,9 +25,7 @@ const PHRASES = ['Всё отлично!',
   'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!'
 ];
 
-const testCommentsArray = createTestCommentsArray(COMMENTS_COUNT, MAX_SENTENCES_COUNT, PHRASES, AVATARS_COUNT, NAMES);
-
-function createTestCommentsArray(commentsCount, sentencesCount, sentencesArray, avatarsCount, namesArray) {
+const testCommentsArray = ((commentsCount, sentencesCount, sentencesArray, avatarsCount, namesArray) => {
 
   const commentsArray = [];
   for (let i = 1; i <= commentsCount; i++) {
@@ -41,10 +39,10 @@ function createTestCommentsArray(commentsCount, sentencesCount, sentencesArray, 
     commentsArray.push(commentObject);
   }
   return commentsArray;
-}
+})(COMMENTS_COUNT, MAX_SENTENCES_COUNT, PHRASES, AVATARS_COUNT, NAMES);
 
 const createPhotoMock = (photoId, likesRange, commentsNumber, commentsArray) => ({
-  id: photoId,
+  id: +photoId,
   url: `photos/${photoId}.jpg`,
   description: `описание к фотографии ${photoId}.jpg`,
   likes: getRandomIntNumber(likesRange.MIN, likesRange.MAX),
@@ -53,4 +51,4 @@ const createPhotoMock = (photoId, likesRange, commentsNumber, commentsArray) => 
 
 const createPhotoMocksArray = () => Array.from({ length: PHOTOS_COUNT }, (_, index) => createPhotoMock(index + 1, LIKES_RANGE, getRandomIntNumber(1, MAX_COMMENTS_PER_PHOTO), testCommentsArray));
 
-export {createPhotoMocksArray};
+export { createPhotoMocksArray };
