@@ -1,4 +1,4 @@
-function getRandomIntNumber(min, max) {
+const getRandomIntNumber = (min, max) => {
   if ((!Number.isFinite(min) || !Number.isFinite(max)) || (min < 0 || max < 0)) {
     return NaN;
   }
@@ -7,17 +7,13 @@ function getRandomIntNumber(min, max) {
   const upperBound = Math.floor(Math.max(min, max));
 
   return Math.floor(Math.random() * (upperBound - lowerBound + 1) + lowerBound);
-}
+};
 
-function getRandomArrElement(array) {
-  return array[getRandomIntNumber(0, array.length - 1)];
-}
+const getRandomArrElement = (array) => array[getRandomIntNumber(0, array.length - 1)];
 
-function getUniqueId() {
-  return Math.floor(Date.now() * Math.random());
-}
+const getUniqueId = () => Math.floor(Date.now() * Math.random());
 
-function getRandElementsFromArr(elementsCount, sourceArray) {
+const getRandElementsFromArr = (elementsCount, sourceArray) => {
 
   const resultArr = [];
 
@@ -27,19 +23,22 @@ function getRandElementsFromArr(elementsCount, sourceArray) {
   }
 
   return resultArr;
-}
+};
 
-function checkStrLength(string, maxLength) {
+const checkStrLength = (string, maxLength) => {
   if (typeof string !== 'string' || !Number.isInteger(maxLength) || maxLength < 0) {
     return null;
   }
   return string.length <= maxLength;
-}
+};
+
+const isEscapeKey = (evt) => evt.key === 'Escape';
 
 export {
   getRandomIntNumber,
   getUniqueId,
   getRandomArrElement,
   getRandElementsFromArr,
-  checkStrLength
+  checkStrLength,
+  isEscapeKey
 };
