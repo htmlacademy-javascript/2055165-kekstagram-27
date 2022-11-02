@@ -13,6 +13,9 @@ const uploadImageField = uploadImageForm.querySelector('#upload-file');
 const uploadImageHashtags = uploadImageForm.querySelector('.text__hashtags');
 const uploadImageDescription = uploadImageForm.querySelector('.text__description');
 
+const submitFormButton = uploadImageForm.querySelector('.img-upload__submit');
+const formTextFields = uploadImageForm.querySelector('.img-upload__text');
+
 const pristine = new Pristine(uploadImageForm, {
   classTo: 'img-upload__field-wrapper',
   errorClass: 'img-upload__field--invalid',
@@ -22,14 +25,14 @@ const pristine = new Pristine(uploadImageForm, {
   errorTextClass: 'form__error'
 });
 
+pristine.addValidator(uploadImageHashtags, validateHashtagsName, hashtagsNameErrorMsg, 3);
+pristine.addValidator(uploadImageHashtags, validateHashtagsCount, hashtagsCountErrorMsg, 2);
+pristine.addValidator(uploadImageHashtags, validateHashtagsDuplicate, hashtagsDuplicateErrorMsg, 1);
+
 const onUploadFormEscKeydown = (evt) => {
-  if (document.activeElement === uploadImageDescription || document.activeElement === uploadImageHashtags){
-    evt.stopPropagation();
-  } else {
-    if (isEscapeKey(evt)) {
-      evt.preventDefault();
-      closeUploadImageForm();
-    }
+  if (!(document.activeElement === uploadImageDescription || document.activeElement === uploadImageHashtags) && isEscapeKey(evt)) {
+    evt.preventDefault();
+    closeUploadImageForm();
   }
 };
 
@@ -37,6 +40,7 @@ function openUploadImageForm() {
   document.body.classList.add('modal-open');
   uploadImageOverlay.classList.remove('hidden');
 
+  formTextFields.addEventListener('input', toggleSubmitFormButton);
   closeUploadFormButton.addEventListener('click', closeUploadImageForm);
   uploadImageForm.addEventListener('submit', onFormSubmit);
   document.addEventListener('keydown', onUploadFormEscKeydown);
@@ -49,6 +53,7 @@ function closeUploadImageForm() {
   uploadImageForm.reset();
   pristine.reset();
 
+  formTextFields.removeEventListener('input', toggleSubmitFormButton);
   closeUploadFormButton.removeEventListener('click', closeUploadImageForm);
   uploadImageForm.removeEventListener('submit', onFormSubmit);
   document.removeEventListener('keydown', onUploadFormEscKeydown);
@@ -67,8 +72,7 @@ function validateHashtagsName(hashtagsString) {
   return true;
 }
 
-
-function hashtagsNameErrorMsg(){
+function hashtagsNameErrorMsg() {
   return `Проверьте хэштеги. Каждый хэштег должен начинаться с 'решетки' (#), иметь длину не более ${HASHTAG_MAXLENGTH} символов и не должен содержать спецсимволов`;
 }
 
@@ -97,16 +101,19 @@ function hashtagsDuplicateErrorMsg() {
   return 'Не должно быть одинаковых хэштегов';
 }
 
-pristine.addValidator(uploadImageHashtags, validateHashtagsName, hashtagsNameErrorMsg, 3);
-pristine.addValidator(uploadImageHashtags, validateHashtagsCount, hashtagsCountErrorMsg, 2);
-pristine.addValidator(uploadImageHashtags, validateHashtagsDuplicate, hashtagsDuplicateErrorMsg, 1);
+function toggleSubmitFormButton(evt) {
+  if (evt.target.closest('div.img-upload__field-wrapper')) {
+    submitFormButton.disabled = !pristine.validate();
+  }
+}
 
 function onFormSubmit(evt) {
   evt.preventDefault();
-  pristine.validate();
-  uploadImageHashtags.value = optimizeHashtagString(uploadImageHashtags.value);
+  if (pristine.validate()) {
+    uploadImageHashtags.value = optimizeHashtagString(uploadImageHashtags.value);
+    uploadImageForm.submit();
+    closeUploadImageForm();
+  }
 }
 
 uploadImageField.addEventListener('change', openUploadImageForm);
-
-
