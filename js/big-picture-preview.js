@@ -2,6 +2,9 @@ import { isEscapeKey } from './utils.js';
 
 const picturePreviewElement = document.querySelector('.big-picture');
 
+const closePicPreviewButton = document.querySelector('.big-picture__cancel');
+
+
 const pictureImage = picturePreviewElement.querySelector('.big-picture__img img');
 const likesCount = picturePreviewElement.querySelector('.likes-count');
 
@@ -40,8 +43,6 @@ function openPicturePreview({ url, likes, comments, description }) {
 
   picturePreviewElement.classList.remove('hidden');
 
-  document.addEventListener('keydown', onPreviewEscKeydown);
-
   pictureImage.src = url;
   likesCount.textContent = likes;
   commentsCount.textContent = comments.length;
@@ -56,12 +57,17 @@ function openPicturePreview({ url, likes, comments, description }) {
   }
 
   commentsList.append(commentsListFragment);
+
+  closePicPreviewButton.addEventListener('click', closePicturePreview);
+  document.addEventListener('keydown', onPreviewEscKeydown);
 }
 
 function closePicturePreview() {
   document.body.classList.remove('modal-open');
   picturePreviewElement.classList.add('hidden');
   clearPictureCommentsData();
+
+  closePicPreviewButton.addEventListener('click', closePicturePreview);
   document.removeEventListener('keydown', onPreviewEscKeydown);
 }
 
