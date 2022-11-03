@@ -3,7 +3,7 @@ import { getUniqueId, getRandomIntNumber, getRandomArrElement, getRandElementsFr
 const PHOTOS_COUNT = 25;
 const COMMENTS_COUNT = PHOTOS_COUNT * 3;
 const AVATARS_COUNT = 6;
-const MAX_COMMENTS_PER_PHOTO = 4;
+const MAX_COMMENTS_PER_PHOTO = 15;
 const MAX_SENTENCES_COUNT = 2;
 
 const LIKES_RANGE = {
