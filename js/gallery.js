@@ -10,11 +10,13 @@ renderPhotoGallery(photoMocks);
 
 const getPhotoObjById = (id) => photoMocks.find((photoObj) => photoObj.id === id);
 
-picturesGallery.addEventListener('click', (evt) => {
+const onClickThumbnail = (evt) => {
   const thumbnailPicObj = evt.target.closest('a.picture');
   if (thumbnailPicObj){
     evt.preventDefault();
     const photoObj = getPhotoObjById(+thumbnailPicObj.dataset.id);
     openPicturePreview(photoObj);
   }
-});
+};
+
+picturesGallery.addEventListener('click', onClickThumbnail);
