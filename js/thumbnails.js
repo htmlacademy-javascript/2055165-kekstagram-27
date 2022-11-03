@@ -1,26 +1,22 @@
-import {createPhotoMocksArray} from './photo-mocks.js';
-import {openPicturePreview} from './big-picture-preview.js';
 
 const picsGalleryElement = document.querySelector('.pictures');
 const pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
 
-const photoMocks = createPhotoMocksArray();
-const picturesGalleryFragment = document.createDocumentFragment();
+const renderPhotoGallery = (photoObjects) => {
+  const picturesGalleryFragment = document.createDocumentFragment();
 
-photoMocks.forEach((mock) => {
-  const picture = pictureTemplate.cloneNode(true);
-  const {url, likes, comments} = mock;
+  photoObjects.forEach(({ id, url, likes, comments }) => {
+    const thumbnailPicture = pictureTemplate.cloneNode(true);
 
-  picture.addEventListener('click', (evt) => {
-    evt.preventDefault();
-    openPicturePreview(mock);
+    thumbnailPicture.dataset.id = id;
+    thumbnailPicture.querySelector('.picture__img').src = url;
+    thumbnailPicture.querySelector('.picture__likes').textContent = likes;
+    thumbnailPicture.querySelector('.picture__comments').textContent = comments.length;
+
+    picturesGalleryFragment.append(thumbnailPicture);
   });
 
-  picture.querySelector('.picture__img').src = url;
-  picture.querySelector('.picture__likes').textContent = likes;
-  picture.querySelector('.picture__comments').textContent = comments.length;
+  picsGalleryElement.append(picturesGalleryFragment);
+};
 
-  picturesGalleryFragment.append(picture);
-});
-
-picsGalleryElement.append(picturesGalleryFragment);
+export { renderPhotoGallery };
