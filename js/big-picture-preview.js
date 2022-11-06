@@ -83,7 +83,7 @@ function openPicturePreview({ url, likes, comments, description }) {
 function closePicturePreview() {
   document.body.classList.remove('modal-open');
   picturePreviewElement.classList.add('hidden');
-  
+
   clearPictureCommentsData();
   commentsArray = null;
 
