@@ -1,16 +1,16 @@
 const SCALE_STEP = 25;
 
-const EFFECTS_FILTERS = {
-  'none': '',
-  'chrome': 'grayscale(1)',
-  'sepia': 'sepia(1)',
-  'marvin': 'invert(100%)',
-  'phobos': 'blur(3px)',
-  'heat': 'brightness(3)'
+const SCALE_RANGE = {
+  MIN: '25%',
+  MAX: '100%',
 };
 
 const SLIDER_OPTIONS = {
+  'none': {
+    filter: '',
+  },
   'chrome': {
+    filter: 'grayscale(1)',
     range: {
       min: 0,
       max: 1
@@ -19,6 +19,7 @@ const SLIDER_OPTIONS = {
     step: 0.1
   },
   'sepia': {
+    filter: 'sepia(1)',
     range: {
       min: 0,
       max: 1
@@ -27,6 +28,7 @@ const SLIDER_OPTIONS = {
     step: 0.1
   },
   'marvin': {
+    filter: 'invert(100%)',
     range: {
       min: 0,
       max: 100
@@ -35,6 +37,7 @@ const SLIDER_OPTIONS = {
     step: 1
   },
   'phobos': {
+    filter: 'blur(3px)',
     range: {
       min: 0,
       max: 3
@@ -43,6 +46,7 @@ const SLIDER_OPTIONS = {
     step: 0.1
   },
   'heat': {
+    filter: 'brightness(3)',
     range: {
       min: 1,
       max: 3
@@ -52,6 +56,8 @@ const SLIDER_OPTIONS = {
   },
 };
 
+const EFFECT_VALUE_FORMAT = /\d{1,3}(\.\d)?/;
+
 const uploadImageForm = document.querySelector('.img-upload__form');
 
 const scaleSmallerButton = uploadImageForm.querySelector('.scale__control--smaller');
@@ -60,49 +66,92 @@ const scaleField = uploadImageForm.querySelector('.scale__control--value');
 
 const image = uploadImageForm.querySelector('.img-upload__preview img');
 
-const sliderEffectElement = uploadImageForm.querySelector('.effect-level__slider');
+const sliderEffectField = uploadImageForm.querySelector('.img-upload__effect-level');
+const sliderEffect = sliderEffectField.querySelector('.effect-level__slider');
+const effectValue = sliderEffectField.querySelector('.effect-level__value');
 
 const effectsList = uploadImageForm.querySelector('.effects__list');
 
 function increaseScale() {
-  if (scaleField.value !== '100%') {
-    scaleField.value = `${Number(scaleField.value.replace('%','')) + SCALE_STEP}%`;
-    image.style.transform = `scale(${Number(scaleField.value.replace('%','')) / 100})`;
+  if (scaleField.value !== SCALE_RANGE.MAX) {
+    scaleField.value = `${Number(scaleField.value.replace('%', '')) + SCALE_STEP}%`;
+    image.style.transform = `scale(${Number(scaleField.value.replace('%', '')) / 100})`;
   }
 }
 
 function decreaseScale() {
-  if (scaleField.value !== '25%') {
-    scaleField.value = `${Number(scaleField.value.replace('%','')) - SCALE_STEP}%`;
-    image.style.transform = `scale(${Number(scaleField.value.replace('%','')) / 100})`;
+  if (scaleField.value !== SCALE_RANGE.MIN) {
+    scaleField.value = `${Number(scaleField.value.replace('%', '')) - SCALE_STEP}%`;
+    image.style.transform = `scale(${Number(scaleField.value.replace('%', '')) / 100})`;
   }
 }
 
-noUiSlider.create(sliderEffectElement, {
-  range: {
-    min: 0,
-    max: 100
-  },
-  start: 100,
-  step: 1,
-  connect: 'lower',
-});
+function hideSliderTool() {
+  sliderEffectField.classList.add('hidden');
+  sliderEffect.setAttribute('disabled', true);
+}
 
-sliderEffectElement.classList.add('hidden');
+function showSliderTool() {
+  sliderEffectField.classList.remove('hidden');
+  sliderEffect.removeAttribute('disabled');
+}
 
-scaleField.value = '100%';
-scaleBiggerButton.addEventListener('click', increaseScale);
-scaleSmallerButton.addEventListener('click', decreaseScale);
+function onChangeFilter(evt) {
+  const filterType = evt.target.closest('input[type="radio"]').value;
 
-effectsList.addEventListener('change', (evt) => {
-  const effectType = evt.target.closest('input[type="radio"]');
+  image.className = image.className.replace(/\beffects__preview--\w+\b/, `effects__preview--${filterType}`);
 
-  if (image.className.includes('effects__preview--')) {
-    image.className = image.className.replace(/\beffects__preview--\w+\b/, `effects__preview--${effectType.value}`);
+  if (filterType === 'none') {
+    hideSliderTool();
+    effectValue.value = '';
   } else {
-    image.classList.add(`effects__preview--${effectType.value}`);
+    showSliderTool();
+    sliderEffect.noUiSlider.updateOptions(SLIDER_OPTIONS[filterType]);
   }
 
-  image.style.filter = EFFECTS_FILTERS[effectType.value];
-});
+  image.style.filter = SLIDER_OPTIONS[filterType].filter;
+}
 
+function updateEffectValue(values, handle) {
+  effectValue.value = sliderEffect.hasAttribute('disabled') ? '' : (+values[handle]).toFixed(1);
+  image.style.filter = image.style.filter.replace(EFFECT_VALUE_FORMAT, effectValue.value);
+}
+
+function loadFiltersOptions() {
+  scaleField.value = SCALE_RANGE.MAX;
+  scaleBiggerButton.addEventListener('click', increaseScale);
+  scaleSmallerButton.addEventListener('click', decreaseScale);
+
+  image.classList.add('effects__preview--none');
+
+  noUiSlider.create(sliderEffect, {
+    range: {
+      min: 0,
+      max: 1
+    },
+    start: 1,
+    step: 1,
+    connect: 'lower',
+  });
+  hideSliderTool();
+
+  image.style.filter = SLIDER_OPTIONS['none'];
+
+  effectsList.addEventListener('change', onChangeFilter);
+  sliderEffect.noUiSlider.on('update', updateEffectValue);
+}
+
+function resetFilterOptions() {
+  scaleField.value = SCALE_RANGE.MAX;
+  scaleBiggerButton.removeEventListener('click', increaseScale);
+  scaleSmallerButton.removeEventListener('click', decreaseScale);
+  effectsList.removeEventListener('change', onChangeFilter);
+
+  image.className = image.className.replace(/\beffects__preview--\w+\b/, '');
+  effectValue.value = '';
+
+  sliderEffect.noUiSlider.destroy();
+  image.removeAttribute('style');
+}
+
+export { loadFiltersOptions, resetFilterOptions };
