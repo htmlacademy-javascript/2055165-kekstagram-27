@@ -61,7 +61,6 @@ function addNewCommentsOnPreview() {
   }
 }
 
-
 function openPicturePreview({ url, likes, comments, description }) {
   commentsArray = comments;
 
@@ -86,7 +85,6 @@ function closePicturePreview() {
   picturePreviewElement.classList.add('hidden');
   clearPictureCommentsData();
   commentsArray = null;
-
 
   closePicPreviewButton.addEventListener('click', closePicturePreview);
   document.removeEventListener('keydown', onPreviewEscKeydown);

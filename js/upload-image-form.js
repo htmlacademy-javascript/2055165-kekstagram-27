@@ -1,4 +1,5 @@
 import { isEscapeKey } from './utils.js';
+import './edit-image.js';
 
 //Константы для валидации полей
 const HASHTAG_MAXLENGTH = 20;
