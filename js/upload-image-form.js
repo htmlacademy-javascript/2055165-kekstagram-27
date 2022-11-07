@@ -1,4 +1,5 @@
 import { isEscapeKey } from './utils.js';
+import {loadFiltersOptions, resetFilterOptions } from './edit-image.js';
 
 //Константы для валидации полей
 const HASHTAG_MAXLENGTH = 20;
@@ -40,6 +41,8 @@ function openUploadImageForm() {
   document.body.classList.add('modal-open');
   uploadImageOverlay.classList.remove('hidden');
 
+  loadFiltersOptions();
+
   formTextFields.addEventListener('input', toggleSubmitFormButton);
   closeUploadFormButton.addEventListener('click', closeUploadImageForm);
   uploadImageForm.addEventListener('submit', onFormSubmit);
@@ -52,6 +55,8 @@ function closeUploadImageForm() {
 
   uploadImageForm.reset();
   pristine.reset();
+
+  resetFilterOptions();
 
   formTextFields.removeEventListener('input', toggleSubmitFormButton);
   closeUploadFormButton.removeEventListener('click', closeUploadImageForm);
