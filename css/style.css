@@ -1422,3 +1422,7 @@ main {
   margin-bottom: -10px;
   font-size: 12px;
 }
+
+.data-error .error__title {
+  line-height: 28px;
+}
