@@ -40,5 +40,5 @@ export {
   getRandomArrElement,
   getRandElementsFromArr,
   checkStrLength,
-  isEscapeKey
+  isEscapeKey,
 };

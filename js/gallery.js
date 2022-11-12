@@ -1,18 +1,26 @@
 import { renderPhotoGallery } from './thumbnails.js';
 import { openPicturePreview } from './big-picture-preview.js';
-import { createPhotoMocksArray } from './photo-mocks.js';
+import { getData } from './data-server-exchange.js';
+import {openDataErrorMessage} from './modal-message-windows.js';
 
 const picturesGallery = document.querySelector('.pictures');
 
-const photoMocks = createPhotoMocksArray();
+let photoObjArray;
 
-renderPhotoGallery(photoMocks);
+getData((photoObjects) => {
+  photoObjArray = photoObjects;
+  renderPhotoGallery(photoObjects);
+},
+() => {
+  openDataErrorMessage();
+});
 
-const getPhotoObjById = (id) => photoMocks.find((photoObj) => photoObj.id === id);
+
+const getPhotoObjById = (id) => photoObjArray.find((photoObj) => photoObj.id === id);
 
 const onClickThumbnail = (evt) => {
   const thumbnailPicObj = evt.target.closest('a.picture');
-  if (thumbnailPicObj){
+  if (thumbnailPicObj) {
     evt.preventDefault();
     const photoObj = getPhotoObjById(+thumbnailPicObj.dataset.id);
     openPicturePreview(photoObj);

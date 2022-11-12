@@ -1,5 +1,7 @@
 import { isEscapeKey } from './utils.js';
-import {loadFiltersOptions, resetFilterOptions } from './edit-image.js';
+import { loadFiltersOptions, resetFilterOptions } from './edit-image.js';
+import { sendData } from './data-server-exchange.js';
+import { openErrorMessage, openSuccessMessage } from './modal-message-windows.js';
 
 //Константы для валидации полей
 const HASHTAG_MAXLENGTH = 20;
@@ -47,6 +49,8 @@ function openUploadImageForm() {
   closeUploadFormButton.addEventListener('click', closeUploadImageForm);
   uploadImageForm.addEventListener('submit', onFormSubmit);
   document.addEventListener('keydown', onUploadFormEscKeydown);
+
+  submitFormButton.disabled = false;
 }
 
 function closeUploadImageForm() {
@@ -116,8 +120,19 @@ function onFormSubmit(evt) {
   evt.preventDefault();
   if (pristine.validate()) {
     uploadImageHashtags.value = optimizeHashtagString(uploadImageHashtags.value);
-    uploadImageForm.submit();
-    closeUploadImageForm();
+    const formData = new FormData(evt.target);
+    submitFormButton.disabled = true;
+
+    sendData(() => {
+      submitFormButton.disabled = false;
+      openSuccessMessage();
+      closeUploadImageForm();
+    },
+    () => {
+      openErrorMessage();
+      submitFormButton.disabled = false;
+    },
+    formData);
   }
 }
 

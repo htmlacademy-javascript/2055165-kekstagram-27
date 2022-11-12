@@ -74,15 +74,15 @@ const effectsList = uploadImageForm.querySelector('.effects__list');
 
 function increaseScale() {
   if (scaleField.value !== SCALE_RANGE.MAX) {
-    scaleField.value = `${Number(scaleField.value.replace('%', '')) + SCALE_STEP}%`;
-    image.style.transform = `scale(${Number(scaleField.value.replace('%', '')) / 100})`;
+    scaleField.value = `${parseInt(scaleField.value, 10) + SCALE_STEP}%`;
+    image.style.transform = `scale(${parseInt(scaleField.value, 10) / 100})`;
   }
 }
 
 function decreaseScale() {
   if (scaleField.value !== SCALE_RANGE.MIN) {
-    scaleField.value = `${Number(scaleField.value.replace('%', '')) - SCALE_STEP}%`;
-    image.style.transform = `scale(${Number(scaleField.value.replace('%', '')) / 100})`;
+    scaleField.value = `${parseInt(scaleField.value, 10) - SCALE_STEP}%`;
+    image.style.transform = `scale(${parseInt(scaleField.value, 10) / 100})`;
   }
 }
 
