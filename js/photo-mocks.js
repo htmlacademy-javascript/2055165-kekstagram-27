@@ -1,4 +1,4 @@
-import { getUniqueId, getRandomIntNumber, getRandomArrElement, getRandElementsFromArr } from './utils.js';
+import { getUniqueId, getRandomIntNumber, getRandomArrElement, getUniqRandElementsFromArr } from './utils.js';
 
 const PHOTOS_COUNT = 25;
 const COMMENTS_COUNT = PHOTOS_COUNT * 3;
@@ -6,7 +6,7 @@ const AVATARS_COUNT = 6;
 const MAX_COMMENTS_PER_PHOTO = 15;
 const MAX_SENTENCES_COUNT = 2;
 
-const LIKES_RANGE = {
+const likesRange = {
   MIN: 15,
   MAX: 200
 };
@@ -32,7 +32,7 @@ const testCommentsArray = ((commentsCount, sentencesCount, sentencesArray, avata
     const commentObject = {
       id: getUniqueId(),
       avatar: `img/avatar-${getRandomIntNumber(1, avatarsCount)}.svg`,
-      message: getRandElementsFromArr(getRandomIntNumber(1, sentencesCount), sentencesArray).join(' '),
+      message: getUniqRandElementsFromArr(getRandomIntNumber(1, sentencesCount), sentencesArray).join(' '),
       name: getRandomArrElement(namesArray),
     };
 
@@ -41,14 +41,14 @@ const testCommentsArray = ((commentsCount, sentencesCount, sentencesArray, avata
   return commentsArray;
 })(COMMENTS_COUNT, MAX_SENTENCES_COUNT, PHRASES, AVATARS_COUNT, NAMES);
 
-const createPhotoMock = (photoId, likesRange, commentsNumber, commentsArray) => ({
+const createPhotoMock = (photoId, likes, commentsNumber, commentsArray) => ({
   id: +photoId,
   url: `photos/${photoId}.jpg`,
   description: `описание к фотографии ${photoId}.jpg`,
-  likes: getRandomIntNumber(likesRange.MIN, likesRange.MAX),
-  comments: getRandElementsFromArr(commentsNumber, commentsArray)
+  likes: getRandomIntNumber(likes.MIN, likes.MAX),
+  comments: getUniqRandElementsFromArr(commentsNumber, commentsArray)
 });
 
-const createPhotoMocksArray = () => Array.from({ length: PHOTOS_COUNT }, (_, index) => createPhotoMock(index + 1, LIKES_RANGE, getRandomIntNumber(1, MAX_COMMENTS_PER_PHOTO), testCommentsArray));
+const createPhotoMocksArray = () => Array.from({ length: PHOTOS_COUNT }, (_, index) => createPhotoMock(index + 1, likesRange, getRandomIntNumber(1, MAX_COMMENTS_PER_PHOTO), testCommentsArray));
 
 export { createPhotoMocksArray };

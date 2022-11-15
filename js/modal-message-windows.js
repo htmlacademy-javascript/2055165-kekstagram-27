@@ -101,5 +101,4 @@ function onDataErrorMessageEscKeyDown(evt){
   }
 }
 
-
 export { openSuccessMessage, openErrorMessage, openDataErrorMessage };
