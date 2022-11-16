@@ -13,12 +13,23 @@ const getRandomArrElement = (array) => array[getRandomIntNumber(0, array.length 
 
 const getUniqueId = () => Math.floor(Date.now() * Math.random());
 
-const getRandElementsFromArr = (elementsCount, sourceArray) => {
+const getUniqRandElementsFromArr = (elementsCount, sourceArray) => {
+
+  const uniqueSourceArray = Array.from(new Set(sourceArray));
+
+  if (elementsCount > uniqueSourceArray.length) {
+    return uniqueSourceArray;
+  }
 
   const resultArr = [];
 
   for (let i = 0; i < elementsCount; i++) {
-    const element = getRandomArrElement(sourceArray);
+    let element = getRandomArrElement(uniqueSourceArray);
+
+    while (resultArr.includes(element)){
+      element = getRandomArrElement(uniqueSourceArray);
+    }
+
     resultArr.push(element);
   }
 
@@ -34,11 +45,22 @@ const checkStrLength = (string, maxLength) => {
 
 const isEscapeKey = (evt) => evt.key === 'Escape';
 
+function debounce (callback, timeoutDelay = 500) {
+  let timeoutId;
+
+  return (...rest) => {
+    clearTimeout(timeoutId);
+
+    timeoutId = setTimeout(() => callback.apply(this, rest), timeoutDelay);
+  };
+}
+
 export {
   getRandomIntNumber,
   getUniqueId,
   getRandomArrElement,
-  getRandElementsFromArr,
+  getUniqRandElementsFromArr,
   checkStrLength,
   isEscapeKey,
+  debounce
 };

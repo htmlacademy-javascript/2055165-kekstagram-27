@@ -1,7 +1,12 @@
 import { renderPhotoGallery } from './thumbnails.js';
 import { openPicturePreview } from './big-picture-preview.js';
 import { getData } from './data-server-exchange.js';
-import {openDataErrorMessage} from './modal-message-windows.js';
+import { openDataErrorMessage } from './modal-message-windows.js';
+import { showFilterOptions, onDefaultFilterClick, onRandomFilterClick, onDiscussedFilterClick, getRandomFilterPhotos, getSortedByCommentPhotos } from './gallery-filter.js';
+import { debounce } from './utils.js';
+
+const UPDATE_GALLERY_DELAY = 500;
+
 
 const picturesGallery = document.querySelector('.pictures');
 
@@ -9,12 +14,23 @@ let photoObjArray;
 
 getData((photoObjects) => {
   photoObjArray = photoObjects;
+
   renderPhotoGallery(photoObjects);
+  showFilterOptions();
+
+  onDefaultFilterClick(debounce(() => renderPhotoGallery(photoObjects), UPDATE_GALLERY_DELAY));
+  onRandomFilterClick(debounce(() => {
+    const randomPhotoObjects = getRandomFilterPhotos(photoObjects);
+    renderPhotoGallery(randomPhotoObjects);
+  }), UPDATE_GALLERY_DELAY);
+  onDiscussedFilterClick(debounce(() => {
+    const sortedByCommentPhotoObjects = getSortedByCommentPhotos(photoObjects);
+    renderPhotoGallery(sortedByCommentPhotoObjects);
+  }), UPDATE_GALLERY_DELAY);
 },
 () => {
   openDataErrorMessage();
 });
-
 
 const getPhotoObjById = (id) => photoObjArray.find((photoObj) => photoObj.id === id);
 
