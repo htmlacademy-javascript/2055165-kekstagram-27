@@ -1423,6 +1423,7 @@ main {
   font-size: 12px;
 }
 
-.data-error .error__title {
+.data-error .error__title,
+.format-error .error__title {
   line-height: 28px;
 }
