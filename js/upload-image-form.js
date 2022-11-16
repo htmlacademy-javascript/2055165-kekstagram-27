@@ -1,7 +1,7 @@
 import { isEscapeKey } from './utils.js';
 import { loadFiltersOptions, resetFilterOptions } from './edit-image.js';
 import { sendData } from './data-server-exchange.js';
-import { openErrorMessage, openSuccessMessage } from './modal-message-windows.js';
+import { showMessageWindow } from './modal-message-windows.js';
 
 //Константы для валидации полей
 const HASHTAG_MAXLENGTH = 20;
@@ -125,11 +125,11 @@ function onFormSubmit(evt) {
 
     sendData(() => {
       submitFormButton.disabled = false;
-      openSuccessMessage();
+      showMessageWindow('success-upload-form');
       closeUploadImageForm();
     },
     () => {
-      openErrorMessage();
+      showMessageWindow('error-upload-from');
       submitFormButton.disabled = false;
     },
     formData);
