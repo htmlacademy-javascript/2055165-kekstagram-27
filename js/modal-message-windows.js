@@ -1,104 +1,67 @@
 import { isEscapeKey } from './utils.js';
 
 const successMessageTemplate = document.querySelector('#success').content.querySelector('.success');
-const successMessageElement = successMessageTemplate.cloneNode(true);
-const closeSuccessButton = successMessageElement.querySelector('.success__button');
-
 const errorMessageTemplate = document.querySelector('#error').content.querySelector('.error');
-const errorMessageElement = errorMessageTemplate.cloneNode(true);
-const closeErrorButton = errorMessageElement.querySelector('.error__button');
-
 const dataErrorMessageTemplate = document.querySelector('#data-error').content.querySelector('.error');
-const dataErrorMessageElement = dataErrorMessageTemplate.cloneNode(true);
-const closeDataErrorButton = dataErrorMessageElement.querySelector('.error__button');
+const formatErrorMessageTemplate = document.querySelector('#format-error').content.querySelector('.error');
 
+function showMessageWindow(typeMessage) {
+  let messageWindowElement;
 
-function openSuccessMessage() {
-  closeSuccessButton.addEventListener('click', closeSuccessMessage);
-  document.addEventListener('keydown', onSuccessMessageEscKeydown);
-  document.addEventListener('click', onSuccessMessageClick);
+  if (typeMessage === 'success-upload-form') {
+    messageWindowElement = successMessageTemplate.cloneNode(true);
+  } else if (typeMessage === 'error-upload-form') {
+    messageWindowElement = errorMessageTemplate.cloneNode(true);
+  } else if (typeMessage === 'load-data-error') {
+    messageWindowElement = dataErrorMessageTemplate.cloneNode(true);
+  } else if (typeMessage === 'error-image-format') {
+    messageWindowElement = formatErrorMessageTemplate.cloneNode(true);
+  }
 
-  document.body.insertAdjacentElement('beforeend', successMessageElement);
+  const closeMessageButton = messageWindowElement.querySelector('button');
+
+  closeMessageButton.addEventListener('click', hideMessageWindow);
+  document.addEventListener('click', onWindowMessageClick);
+  document.addEventListener('keydown', onWindowMessageEscKeyDown, {capture: true});
+
+  document.body.insertAdjacentElement('beforeend', messageWindowElement);
 }
 
-function closeSuccessMessage() {
-  successMessageElement.remove();
+function hideMessageWindow() {
+  const messageWindowElement = (
+    document.querySelector('section.error') ||
+    document.querySelector('section.data-error') ||
+    document.querySelector('section.format-error') ||
+    document.querySelector('section.success')
+  );
 
-  closeSuccessButton.removeEventListener('click', closeSuccessMessage);
-  document.removeEventListener('keydown', onSuccessMessageEscKeydown);
-  document.removeEventListener('click', onSuccessMessageClick);
+  messageWindowElement.remove();
+  const closeMessageButton = messageWindowElement.querySelector('button');
+
+  closeMessageButton.removeEventListener('click', hideMessageWindow);
+  document.removeEventListener('click', onWindowMessageClick);
+  document.removeEventListener('keydown', onWindowMessageEscKeyDown, {capture: true});
 }
 
-function onSuccessMessageEscKeydown(evt) {
+function onWindowMessageClick(evt) {
+  const messageWindowElement = (
+    document.querySelector('section.error') ||
+    document.querySelector('section.data-error') ||
+    document.querySelector('section.format-error') ||
+    document.querySelector('section.success')
+  );
+
+  if (evt.target === messageWindowElement) {
+    hideMessageWindow();
+  }
+}
+
+function onWindowMessageEscKeyDown(evt) {
+  evt.preventDefault();
   if (isEscapeKey(evt)) {
-    evt.preventDefault();
-    closeSuccessMessage();
-  }
-}
-
-function onSuccessMessageClick(evt) {
-  if (evt.target === successMessageElement) {
-    closeSuccessMessage();
-  }
-}
-
-function openErrorMessage() {
-  closeErrorButton.addEventListener('click', closeErrorMessage);
-  document.addEventListener('click', onErrorMessageClick);
-  document.addEventListener('keydown', onErrorMessageEscKeyDown, { capture: true });
-
-  document.body.insertAdjacentElement('beforeend', errorMessageElement);
-}
-
-function closeErrorMessage() {
-  errorMessageElement.remove();
-
-  closeErrorButton.removeEventListener('click', closeErrorMessage);
-  document.removeEventListener('click', onErrorMessageClick);
-  document.removeEventListener('keydown', onErrorMessageEscKeyDown, { capture: true });
-}
-
-function onErrorMessageClick(evt) {
-  if (evt.target === errorMessageElement) {
-    closeErrorMessage();
-  }
-}
-
-function onErrorMessageEscKeyDown(evt){
-  if (isEscapeKey(evt)) {
-    evt.preventDefault();
     evt.stopPropagation();
-    closeErrorMessage();
+    hideMessageWindow();
   }
 }
 
-function openDataErrorMessage() {
-  document.body.insertAdjacentElement('beforeend', dataErrorMessageElement);
-
-  closeDataErrorButton.addEventListener('click', closeDataErrorMessage);
-  document.addEventListener('click', onDataErrorMessageClick);
-  document.addEventListener('keydown', onDataErrorMessageEscKeyDown);
-}
-
-function closeDataErrorMessage() {
-  dataErrorMessageElement.remove();
-
-  closeDataErrorButton.removeEventListener('click', closeDataErrorMessage);
-  document.removeEventListener('click', onDataErrorMessageClick);
-  document.removeEventListener('keydown', onDataErrorMessageEscKeyDown);
-}
-
-function onDataErrorMessageClick(evt) {
-  if (evt.target === dataErrorMessageElement) {
-    closeDataErrorMessage();
-  }
-}
-
-function onDataErrorMessageEscKeyDown(evt){
-  if (isEscapeKey(evt)) {
-    evt.preventDefault();
-    closeDataErrorMessage();
-  }
-}
-
-export { openSuccessMessage, openErrorMessage, openDataErrorMessage };
+export { showMessageWindow };

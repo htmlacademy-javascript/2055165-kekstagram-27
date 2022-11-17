@@ -25,7 +25,6 @@ const getUniqRandElementsFromArr = (elementsCount, sourceArray) => {
 
   for (let i = 0; i < elementsCount; i++) {
     let element = getRandomArrElement(uniqueSourceArray);
-
     while (resultArr.includes(element)){
       element = getRandomArrElement(uniqueSourceArray);
     }
@@ -45,7 +44,7 @@ const checkStrLength = (string, maxLength) => {
 
 const isEscapeKey = (evt) => evt.key === 'Escape';
 
-function debounce (callback, timeoutDelay = 500) {
+const debounce = (callback, timeoutDelay = 500) => {
   let timeoutId;
 
   return (...rest) => {
@@ -53,7 +52,7 @@ function debounce (callback, timeoutDelay = 500) {
 
     timeoutId = setTimeout(() => callback.apply(this, rest), timeoutDelay);
   };
-}
+};
 
 export {
   getRandomIntNumber,

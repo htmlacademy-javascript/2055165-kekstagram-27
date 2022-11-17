@@ -1,7 +1,7 @@
 import { renderPhotoGallery } from './thumbnails.js';
 import { openPicturePreview } from './big-picture-preview.js';
 import { getData } from './data-server-exchange.js';
-import { openDataErrorMessage } from './modal-message-windows.js';
+import { showMessageWindow } from './modal-message-windows.js';
 import { showFilterOptions, onDefaultFilterClick, onRandomFilterClick, onDiscussedFilterClick, getRandomFilterPhotos, getSortedByCommentPhotos } from './gallery-filter.js';
 import { debounce } from './utils.js';
 
@@ -29,7 +29,7 @@ getData((photoObjects) => {
   }), UPDATE_GALLERY_DELAY);
 },
 () => {
-  openDataErrorMessage();
+  showMessageWindow('load-data-error');
 });
 
 const getPhotoObjById = (id) => photoObjArray.find((photoObj) => photoObj.id === id);

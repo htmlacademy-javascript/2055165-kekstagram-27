@@ -37,9 +37,9 @@
           <form class="img-upload__form" id="upload-select-image" method="post"
             action="https://27.javascript.pages.academy/kekstagram" enctype="multipart/form-data" autocomplete="off">
 
-            <!-- Изначальное состояние поля для загрузки изображения -->
+            <!-- Изначальное состояние поля для загрузки изображения  -->
             <fieldset class="img-upload__start">
-              <input type="file" id="upload-file" class="img-upload__input  visually-hidden" name="filename" required>
+              <input type="file" id="upload-file" class="img-upload__input  visually-hidden" name="filename" accept="image/png, image/jpeg, image/jpg" required>
               <label for="upload-file" class="img-upload__label  img-upload__control">Загрузить</label>
             </fieldset>
 
@@ -243,6 +243,17 @@
       <div class="error__inner">
         <h2 class="error__title">Не удалось загрузить другие фотографии</h2>
         <p>Попробуйте перезагрузить страницу или повторите попытку позднее</p>
+        <button type="button" class="error__button">Ок</button>
+      </div>
+    </section>
+  </template>
+
+  <!-- Сообщение с ошибкой формата изображения -->
+  <template id="format-error">
+    <section class="error format-error">
+      <div class="error__inner">
+        <h2 class="error__title">Недопустимый формат файла</h2>
+        <p>Выберите другой файл. Допустимые форматы: "jpg", "jpeg" или "png"</p>
         <button type="button" class="error__button">Ок</button>
       </div>
     </section>
