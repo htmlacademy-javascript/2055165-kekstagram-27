@@ -6,7 +6,7 @@ const AVATARS_COUNT = 6;
 const MAX_COMMENTS_PER_PHOTO = 15;
 const MAX_SENTENCES_COUNT = 2;
 
-const likesRange = {
+const LikesRange = {
   MIN: 15,
   MAX: 200
 };
@@ -49,6 +49,6 @@ const createPhotoMock = (photoId, likes, commentsNumber, commentsArray) => ({
   comments: getUniqRandElementsFromArr(commentsNumber, commentsArray)
 });
 
-const createPhotoMocksArray = () => Array.from({ length: PHOTOS_COUNT }, (_, index) => createPhotoMock(index + 1, likesRange, getRandomIntNumber(1, MAX_COMMENTS_PER_PHOTO), testCommentsArray));
+const createPhotoMocksArray = () => Array.from({ length: PHOTOS_COUNT }, (_, index) => createPhotoMock(index + 1, LikesRange, getRandomIntNumber(1, MAX_COMMENTS_PER_PHOTO), testCommentsArray));
 
 export { createPhotoMocksArray };

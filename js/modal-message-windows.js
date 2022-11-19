@@ -5,6 +5,33 @@ const errorMessageTemplate = document.querySelector('#error').content.querySelec
 const dataErrorMessageTemplate = document.querySelector('#data-error').content.querySelector('.error');
 const formatErrorMessageTemplate = document.querySelector('#format-error').content.querySelector('.error');
 
+const onWindowMessageEscKeyDown = (evt) => {
+  evt.preventDefault();
+  if (isEscapeKey(evt)) {
+    evt.stopPropagation();
+    hideMessageWindow();
+  }
+};
+
+const findWindowMessageElement = () => {
+  const messageWindowElement = (
+    document.querySelector('section.error') ||
+    document.querySelector('section.data-error') ||
+    document.querySelector('section.format-error') ||
+    document.querySelector('section.success')
+  );
+
+  return messageWindowElement;
+};
+
+const onWindowMessageClick = (evt) => {
+  const messageWindowElement = findWindowMessageElement();
+
+  if (evt.target === messageWindowElement) {
+    hideMessageWindow();
+  }
+};
+
 function showMessageWindow(typeMessage) {
   let messageWindowElement;
 
@@ -28,12 +55,7 @@ function showMessageWindow(typeMessage) {
 }
 
 function hideMessageWindow() {
-  const messageWindowElement = (
-    document.querySelector('section.error') ||
-    document.querySelector('section.data-error') ||
-    document.querySelector('section.format-error') ||
-    document.querySelector('section.success')
-  );
+  const messageWindowElement = findWindowMessageElement();
 
   messageWindowElement.remove();
   const closeMessageButton = messageWindowElement.querySelector('button');
@@ -41,27 +63,6 @@ function hideMessageWindow() {
   closeMessageButton.removeEventListener('click', hideMessageWindow);
   document.removeEventListener('click', onWindowMessageClick);
   document.removeEventListener('keydown', onWindowMessageEscKeyDown, {capture: true});
-}
-
-function onWindowMessageClick(evt) {
-  const messageWindowElement = (
-    document.querySelector('section.error') ||
-    document.querySelector('section.data-error') ||
-    document.querySelector('section.format-error') ||
-    document.querySelector('section.success')
-  );
-
-  if (evt.target === messageWindowElement) {
-    hideMessageWindow();
-  }
-}
-
-function onWindowMessageEscKeyDown(evt) {
-  evt.preventDefault();
-  if (isEscapeKey(evt)) {
-    evt.stopPropagation();
-    hideMessageWindow();
-  }
 }
 
 export { showMessageWindow };

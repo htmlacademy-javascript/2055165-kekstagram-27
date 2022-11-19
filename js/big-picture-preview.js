@@ -40,7 +40,7 @@ const createCommentItem = ({ avatar, name, message }) => {
   return newCommentItem;
 };
 
-function addNewCommentsOnPreview() {
+const addNewCommentsOnPreview = () => {
   let lastCurrentCommentNumber = commentsList.children.length;
   const lastNewCommentNumber = commentsArray.length - commentsList.children.length < COMMENTS_COUNT_PER_ADDING ? commentsArray.length : lastCurrentCommentNumber + COMMENTS_COUNT_PER_ADDING;
 
@@ -59,7 +59,7 @@ function addNewCommentsOnPreview() {
   } else {
     commentsLoader.classList.remove('hidden');
   }
-}
+};
 
 function openPicturePreview({ url, likes, comments, description }) {
   commentsArray = comments;

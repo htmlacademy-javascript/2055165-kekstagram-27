@@ -10,7 +10,6 @@ const HASHTAG_PATTERN = /^#[a-zа-яё0-9]{1,19}$/i;
 
 const FILE_IMAGE_TYPES = ['jpg', 'jpeg', 'png'];
 
-
 const uploadImageForm = document.querySelector('.img-upload__form');
 const uploadImageOverlay = uploadImageForm.querySelector('.img-upload__overlay');
 const closeUploadFormButton = uploadImageForm.querySelector('.img-upload__cancel');
@@ -35,10 +34,6 @@ const pristine = new Pristine(uploadImageForm, {
   errorTextClass: 'form__error'
 });
 
-pristine.addValidator(uploadImageHashtags, validateHashtagsName, hashtagsNameErrorMsg, 3);
-pristine.addValidator(uploadImageHashtags, validateHashtagsCount, hashtagsCountErrorMsg, 2);
-pristine.addValidator(uploadImageHashtags, validateHashtagsDuplicate, hashtagsDuplicateErrorMsg, 1);
-
 const onUploadFormEscKeydown = (evt) => {
   if (!(document.activeElement === uploadImageDescription || document.activeElement === uploadImageHashtags) && isEscapeKey(evt)) {
     evt.preventDefault();
@@ -56,23 +51,84 @@ const hideLoadingMessage = () => {
   messageElement.remove();
 };
 
-const loadImage = () => {
+const onChangeFileImage = () => {
   const fileImage = imageFileChooser.files[0];
   const fileName = fileImage.name.toLowerCase();
   const matches = FILE_IMAGE_TYPES.some((it) => fileName.endsWith(it));
 
   if (matches) {
     const imageUrl = URL.createObjectURL(fileImage);
-    const onLoad = () => {
+    const onLoadImage = () => {
       URL.revokeObjectURL(imageUrl);
-      imagePreview.removeEventListener('load', onLoad);
+      imagePreview.removeEventListener('load', onLoadImage);
       openUploadImageForm();
     };
 
-    imagePreview.addEventListener('load', onLoad);
+    imagePreview.addEventListener('load', onLoadImage);
     imagePreview.src = imageUrl;
   } else {
     showMessageWindow('error-image-format');
+  }
+};
+
+const optimizeHashtagString = (srcString) => srcString.toLowerCase().replace(/\s+/g, ' ').trim();
+
+const validateHashtagsName = (hashtagsString) => {
+  if (hashtagsString.trim() !== '') {
+    hashtagsString = optimizeHashtagString(hashtagsString);
+    const hashtags = hashtagsString.split(' ');
+    return hashtags.every((hashtag) => HASHTAG_PATTERN.test(hashtag));
+  }
+  return true;
+};
+
+const validateHashtagsCount = (hashtagsString) => {
+  if (hashtagsString.trim() !== '') {
+    hashtagsString = optimizeHashtagString(hashtagsString);
+    return hashtagsString.split(' ').length <= HASHTAG_MAXCOUNT;
+  }
+  return true;
+};
+
+const validateHashtagsDuplicate = (hashtagsString) => {
+  if (hashtagsString.trim() !== '') {
+    hashtagsString = optimizeHashtagString(hashtagsString);
+    const hashtags = hashtagsString.split(' ');
+    return hashtags.length === new Set(hashtags).size;
+  }
+  return true;
+};
+
+const hashtagsNameErrorMsg = () => `Проверьте хэштеги. Каждый хэштег должен начинаться с 'решетки' (#), иметь длину не более ${HASHTAG_MAXLENGTH} символов и не должен содержать спецсимволов`;
+const hashtagsDuplicateErrorMsg = () => 'Не должно быть одинаковых хэштегов';
+const hashtagsCountErrorMsg = () => `Максимальное число хэштегов не должно превышать ${HASHTAG_MAXCOUNT}`;
+
+const toggleSubmitFormButton = (evt) => {
+  if (evt.target.closest('div.img-upload__field-wrapper')) {
+    submitFormButton.disabled = !pristine.validate();
+  }
+};
+
+const onUploadFormSubmit = (evt) => {
+  evt.preventDefault();
+  if (pristine.validate()) {
+    uploadImageHashtags.value = optimizeHashtagString(uploadImageHashtags.value);
+    const formData = new FormData(evt.target);
+    submitFormButton.disabled = true;
+    showLoadingMessage();
+
+    sendData(() => {
+      submitFormButton.disabled = false;
+      hideLoadingMessage();
+      showMessageWindow('success-upload-form');
+      closeUploadImageForm();
+    },
+    () => {
+      hideLoadingMessage();
+      showMessageWindow('error-upload-form');
+      submitFormButton.disabled = false;
+    },
+    formData);
   }
 };
 
@@ -106,76 +162,8 @@ function closeUploadImageForm() {
   document.removeEventListener('keydown', onUploadFormEscKeydown);
 }
 
-function optimizeHashtagString(srcString) {
-  return srcString.toLowerCase().replace(/\s+/g, ' ').trim();
-}
+pristine.addValidator(uploadImageHashtags, validateHashtagsName, hashtagsNameErrorMsg, 3);
+pristine.addValidator(uploadImageHashtags, validateHashtagsCount, hashtagsCountErrorMsg, 2);
+pristine.addValidator(uploadImageHashtags, validateHashtagsDuplicate, hashtagsDuplicateErrorMsg, 1);
 
-function validateHashtagsName(hashtagsString) {
-  if (hashtagsString.trim() !== '') {
-    hashtagsString = optimizeHashtagString(hashtagsString);
-    const hashtags = hashtagsString.split(' ');
-    return hashtags.every((hashtag) => HASHTAG_PATTERN.test(hashtag));
-  }
-  return true;
-}
-
-function hashtagsNameErrorMsg() {
-  return `Проверьте хэштеги. Каждый хэштег должен начинаться с 'решетки' (#), иметь длину не более ${HASHTAG_MAXLENGTH} символов и не должен содержать спецсимволов`;
-}
-
-function validateHashtagsCount(hashtagsString) {
-  if (hashtagsString.trim() !== '') {
-    hashtagsString = optimizeHashtagString(hashtagsString);
-    return hashtagsString.split(' ').length <= HASHTAG_MAXCOUNT;
-  }
-  return true;
-}
-
-function hashtagsCountErrorMsg() {
-  return `Максимальное число хэштегов не должно превышать ${HASHTAG_MAXCOUNT}`;
-}
-
-function validateHashtagsDuplicate(hashtagsString) {
-  if (hashtagsString.trim() !== '') {
-    hashtagsString = optimizeHashtagString(hashtagsString);
-    const hashtags = hashtagsString.split(' ');
-    return hashtags.length === new Set(hashtags).size;
-  }
-  return true;
-}
-
-function hashtagsDuplicateErrorMsg() {
-  return 'Не должно быть одинаковых хэштегов';
-}
-
-function toggleSubmitFormButton(evt) {
-  if (evt.target.closest('div.img-upload__field-wrapper')) {
-    submitFormButton.disabled = !pristine.validate();
-  }
-}
-
-function onUploadFormSubmit(evt) {
-  evt.preventDefault();
-  if (pristine.validate()) {
-    uploadImageHashtags.value = optimizeHashtagString(uploadImageHashtags.value);
-    const formData = new FormData(evt.target);
-    submitFormButton.disabled = true;
-    showLoadingMessage();
-
-    sendData(() => {
-      submitFormButton.disabled = false;
-      hideLoadingMessage();
-      showMessageWindow('success-upload-form');
-      closeUploadImageForm();
-    },
-    () => {
-      hideLoadingMessage();
-      showMessageWindow('error-upload-form');
-      submitFormButton.disabled = false;
-    },
-    formData);
-
-  }
-}
-
-imageFileChooser.addEventListener('change', loadImage);
+imageFileChooser.addEventListener('change', onChangeFileImage);
