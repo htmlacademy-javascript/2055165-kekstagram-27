@@ -99,10 +99,6 @@ const validateHashtagsDuplicate = (hashtagsString) => {
   return true;
 };
 
-const hashtagsNameErrorMsg = () => `Проверьте хэштеги. Каждый хэштег должен начинаться с 'решетки' (#), иметь длину не более ${HASHTAG_MAXLENGTH} символов и не должен содержать спецсимволов`;
-const hashtagsDuplicateErrorMsg = () => 'Не должно быть одинаковых хэштегов';
-const hashtagsCountErrorMsg = () => `Максимальное число хэштегов не должно превышать ${HASHTAG_MAXCOUNT}`;
-
 const toggleSubmitFormButton = (evt) => {
   if (evt.target.closest('div.img-upload__field-wrapper')) {
     submitFormButton.disabled = !pristine.validate();
@@ -162,8 +158,8 @@ function closeUploadImageForm() {
   document.removeEventListener('keydown', onUploadFormEscKeydown);
 }
 
-pristine.addValidator(uploadImageHashtags, validateHashtagsName, hashtagsNameErrorMsg, 3);
-pristine.addValidator(uploadImageHashtags, validateHashtagsCount, hashtagsCountErrorMsg, 2);
-pristine.addValidator(uploadImageHashtags, validateHashtagsDuplicate, hashtagsDuplicateErrorMsg, 1);
+pristine.addValidator(uploadImageHashtags, validateHashtagsName, `Проверьте хэштеги. Каждый хэштег должен начинаться с 'решетки' (#), иметь длину не более ${HASHTAG_MAXLENGTH} символов и не должен содержать спецсимволов`, 3);
+pristine.addValidator(uploadImageHashtags, validateHashtagsCount, `Максимальное число хэштегов не должно превышать ${HASHTAG_MAXCOUNT}`, 2);
+pristine.addValidator(uploadImageHashtags, validateHashtagsDuplicate, 'Не должно быть одинаковых хэштегов', 1);
 
 imageFileChooser.addEventListener('change', onChangeFileImage);

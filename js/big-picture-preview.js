@@ -1,6 +1,6 @@
 import { isEscapeKey } from './utils.js';
 
-let commentsArray;
+let commentsBlock;
 
 const COMMENTS_COUNT_PER_ADDING = 5;
 
@@ -42,19 +42,19 @@ const createCommentItem = ({ avatar, name, message }) => {
 
 const addNewCommentsOnPreview = () => {
   let lastCurrentCommentNumber = commentsList.children.length;
-  const lastNewCommentNumber = commentsArray.length - commentsList.children.length < COMMENTS_COUNT_PER_ADDING ? commentsArray.length : lastCurrentCommentNumber + COMMENTS_COUNT_PER_ADDING;
+  const lastNewCommentNumber = commentsBlock.length - commentsList.children.length < COMMENTS_COUNT_PER_ADDING ? commentsBlock.length : lastCurrentCommentNumber + COMMENTS_COUNT_PER_ADDING;
 
   const commentsListFragment = document.createDocumentFragment();
 
   for (lastCurrentCommentNumber; lastCurrentCommentNumber < lastNewCommentNumber; lastCurrentCommentNumber++) {
-    const newCommentItem = createCommentItem(commentsArray[lastCurrentCommentNumber]);
+    const newCommentItem = createCommentItem(commentsBlock[lastCurrentCommentNumber]);
     commentsListFragment.append(newCommentItem);
   }
 
   commentsList.append(commentsListFragment);
   currentCommentsOnPreview.textContent = commentsList.children.length;
 
-  if (lastCurrentCommentNumber === commentsArray.length) {
+  if (lastCurrentCommentNumber === commentsBlock.length) {
     commentsLoader.classList.add('hidden');
   } else {
     commentsLoader.classList.remove('hidden');
@@ -62,7 +62,7 @@ const addNewCommentsOnPreview = () => {
 };
 
 function openPicturePreview({ url, likes, comments, description }) {
-  commentsArray = comments;
+  commentsBlock = comments;
 
   document.body.classList.add('modal-open');
   picturePreviewElement.classList.remove('hidden');
@@ -85,7 +85,7 @@ function closePicturePreview() {
   picturePreviewElement.classList.add('hidden');
 
   clearPictureCommentsData();
-  commentsArray = null;
+  commentsBlock = null;
 
   closePicPreviewButton.addEventListener('click', closePicturePreview);
   document.removeEventListener('keydown', onPreviewEscKeydown);

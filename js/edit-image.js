@@ -72,31 +72,31 @@ const effectValue = sliderEffectField.querySelector('.effect-level__value');
 
 const effectsList = uploadImageForm.querySelector('.effects__list');
 
-function increaseScale() {
+const increaseScale = () => {
   if (scaleField.value !== ScaleRange.MAX) {
     scaleField.value = `${parseInt(scaleField.value, 10) + SCALE_STEP}%`;
     image.style.transform = `scale(${parseInt(scaleField.value, 10) / 100})`;
   }
-}
+};
 
-function decreaseScale() {
+const decreaseScale = () => {
   if (scaleField.value !== ScaleRange.MIN) {
     scaleField.value = `${parseInt(scaleField.value, 10) - SCALE_STEP}%`;
     image.style.transform = `scale(${parseInt(scaleField.value, 10) / 100})`;
   }
-}
+};
 
-function hideSliderTool() {
+const hideSliderTool = () => {
   sliderEffectField.classList.add('hidden');
   sliderEffect.setAttribute('disabled', true);
-}
+};
 
-function showSliderTool() {
+const showSliderTool = () => {
   sliderEffectField.classList.remove('hidden');
   sliderEffect.removeAttribute('disabled');
-}
+};
 
-function onChangeFilter(evt) {
+const onChangeEffect = (evt) => {
   const filterType = evt.target.closest('input[type="radio"]').value;
 
   image.className = image.className.replace(/\beffects__preview--\w+\b/, `effects__preview--${filterType}`);
@@ -110,14 +110,14 @@ function onChangeFilter(evt) {
   }
 
   image.style.filter = SLIDER_OPTIONS[filterType].filter;
-}
+};
 
-function updateEffectValue(values, handle) {
+const updateEffectValue = (values, handle) => {
   effectValue.value = sliderEffect.hasAttribute('disabled') ? '' : (+values[handle]).toFixed(1);
   image.style.filter = image.style.filter.replace(EFFECT_VALUE_FORMAT, effectValue.value);
-}
+};
 
-function loadFiltersOptions() {
+const loadFiltersOptions = () => {
   scaleField.value = ScaleRange.MAX;
   scaleBiggerButton.addEventListener('click', increaseScale);
   scaleSmallerButton.addEventListener('click', decreaseScale);
@@ -137,21 +137,21 @@ function loadFiltersOptions() {
 
   image.style.filter = SLIDER_OPTIONS['none'];
 
-  effectsList.addEventListener('change', onChangeFilter);
+  effectsList.addEventListener('change', onChangeEffect);
   sliderEffect.noUiSlider.on('update', updateEffectValue);
-}
+};
 
-function resetFilterOptions() {
+const resetFilterOptions = () => {
   scaleField.value = ScaleRange.MAX;
   scaleBiggerButton.removeEventListener('click', increaseScale);
   scaleSmallerButton.removeEventListener('click', decreaseScale);
-  effectsList.removeEventListener('change', onChangeFilter);
+  effectsList.removeEventListener('change', onChangeEffect);
 
   image.className = image.className.replace(/\beffects__preview--\w+\b/, '');
   effectValue.value = '';
 
   sliderEffect.noUiSlider.destroy();
   image.removeAttribute('style');
-}
+};
 
 export { loadFiltersOptions, resetFilterOptions };
