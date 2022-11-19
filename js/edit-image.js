@@ -1,6 +1,6 @@
 const SCALE_STEP = 25;
 
-const scaleRange = {
+const ScaleRange = {
   MIN: '25%',
   MAX: '100%',
 };
@@ -73,14 +73,14 @@ const effectValue = sliderEffectField.querySelector('.effect-level__value');
 const effectsList = uploadImageForm.querySelector('.effects__list');
 
 function increaseScale() {
-  if (scaleField.value !== scaleRange.MAX) {
+  if (scaleField.value !== ScaleRange.MAX) {
     scaleField.value = `${parseInt(scaleField.value, 10) + SCALE_STEP}%`;
     image.style.transform = `scale(${parseInt(scaleField.value, 10) / 100})`;
   }
 }
 
 function decreaseScale() {
-  if (scaleField.value !== scaleRange.MIN) {
+  if (scaleField.value !== ScaleRange.MIN) {
     scaleField.value = `${parseInt(scaleField.value, 10) - SCALE_STEP}%`;
     image.style.transform = `scale(${parseInt(scaleField.value, 10) / 100})`;
   }
@@ -118,7 +118,7 @@ function updateEffectValue(values, handle) {
 }
 
 function loadFiltersOptions() {
-  scaleField.value = scaleRange.MAX;
+  scaleField.value = ScaleRange.MAX;
   scaleBiggerButton.addEventListener('click', increaseScale);
   scaleSmallerButton.addEventListener('click', decreaseScale);
 
@@ -142,7 +142,7 @@ function loadFiltersOptions() {
 }
 
 function resetFilterOptions() {
-  scaleField.value = scaleRange.MAX;
+  scaleField.value = ScaleRange.MAX;
   scaleBiggerButton.removeEventListener('click', increaseScale);
   scaleSmallerButton.removeEventListener('click', decreaseScale);
   effectsList.removeEventListener('change', onChangeFilter);

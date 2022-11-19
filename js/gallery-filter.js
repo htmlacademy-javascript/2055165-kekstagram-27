@@ -12,16 +12,11 @@ const showFilterOptions = () => {
   filterMenu.classList.remove('img-filters--inactive');
 };
 
-function getRandomFilterPhotos(photoObjects) {
-  return getUniqRandElementsFromArr(RANDOM_FILTER_PHOTOS_COUNT, photoObjects);
-}
+const getRandomFilterPhotos = (photoObjects) => getUniqRandElementsFromArr(RANDOM_FILTER_PHOTOS_COUNT, photoObjects);
 
-function comparePhotoObjects(obj1, obj2) {
-  return obj2.comments.length - obj1.comments.length;
-}
-function getSortedByCommentPhotos(photoObjects) {
-  return photoObjects.slice().sort(comparePhotoObjects);
-}
+const comparePhotoObjects = (obj1, obj2) => obj2.comments.length - obj1.comments.length;
+
+const getSortedByCommentPhotos = (photoObjects) => photoObjects.slice().sort(comparePhotoObjects);
 
 const onDefaultFilterClick = (callback) => {
   defaultFilterButton.addEventListener('click', (evt) => {

@@ -7,10 +7,22 @@ import { debounce } from './utils.js';
 
 const UPDATE_GALLERY_DELAY = 500;
 
-
 const picturesGallery = document.querySelector('.pictures');
 
 let photoObjArray;
+
+const getPhotoObjById = (id) => photoObjArray.find((photoObj) => photoObj.id === id);
+
+const onClickThumbnail = (evt) => {
+  const thumbnailPicObj = evt.target.closest('a.picture');
+  if (thumbnailPicObj) {
+    evt.preventDefault();
+    const photoObj = getPhotoObjById(+thumbnailPicObj.dataset.id);
+    openPicturePreview(photoObj);
+  }
+};
+
+picturesGallery.addEventListener('click', onClickThumbnail);
 
 getData((photoObjects) => {
   photoObjArray = photoObjects;
@@ -31,16 +43,3 @@ getData((photoObjects) => {
 () => {
   showMessageWindow('load-data-error');
 });
-
-const getPhotoObjById = (id) => photoObjArray.find((photoObj) => photoObj.id === id);
-
-const onClickThumbnail = (evt) => {
-  const thumbnailPicObj = evt.target.closest('a.picture');
-  if (thumbnailPicObj) {
-    evt.preventDefault();
-    const photoObj = getPhotoObjById(+thumbnailPicObj.dataset.id);
-    openPicturePreview(photoObj);
-  }
-};
-
-picturesGallery.addEventListener('click', onClickThumbnail);
