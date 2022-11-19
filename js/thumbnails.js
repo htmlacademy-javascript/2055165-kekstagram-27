@@ -1,9 +1,9 @@
 
-const picsGalleryElement = document.querySelector('.pictures');
+const pictureGalleryElement = document.querySelector('.pictures');
 const pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
 
 const clearPhotoGallery = () => {
-  const thumbnails = picsGalleryElement.querySelectorAll('a.picture');
+  const thumbnails = pictureGalleryElement.querySelectorAll('a.picture');
   for (const thumbnail of thumbnails) {
     thumbnail.remove();
   }
@@ -25,7 +25,7 @@ const renderPhotoGallery = (photoObjects) => {
 
   clearPhotoGallery();
 
-  picsGalleryElement.append(picturesGalleryFragment);
+  pictureGalleryElement.append(picturesGalleryFragment);
 };
 
 export { renderPhotoGallery };
