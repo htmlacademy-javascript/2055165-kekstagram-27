@@ -21,18 +21,18 @@ const getUniqRandElementsFromArr = (elementsCount, sourceArray) => {
     return uniqueSourceArray;
   }
 
-  const resultArr = [];
+  const resultElements = [];
 
   for (let i = 0; i < elementsCount; i++) {
     let element = getRandomArrElement(uniqueSourceArray);
-    while (resultArr.includes(element)){
+    while (resultElements.includes(element)){
       element = getRandomArrElement(uniqueSourceArray);
     }
 
-    resultArr.push(element);
+    resultElements.push(element);
   }
 
-  return resultArr;
+  return resultElements;
 };
 
 const checkStrLength = (string, maxLength) => {

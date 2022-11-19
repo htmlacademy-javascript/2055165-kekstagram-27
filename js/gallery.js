@@ -9,9 +9,9 @@ const UPDATE_GALLERY_DELAY = 500;
 
 const picturesGallery = document.querySelector('.pictures');
 
-let photoObjArray;
+let photoCache;
 
-const getPhotoObjById = (id) => photoObjArray.find((photoObj) => photoObj.id === id);
+const getPhotoObjById = (id) => photoCache.find((photoObj) => photoObj.id === id);
 
 const onClickThumbnail = (evt) => {
   const thumbnailPicObj = evt.target.closest('a.picture');
@@ -25,7 +25,7 @@ const onClickThumbnail = (evt) => {
 picturesGallery.addEventListener('click', onClickThumbnail);
 
 getData((photoObjects) => {
-  photoObjArray = photoObjects;
+  photoCache = photoObjects;
 
   renderPhotoGallery(photoObjects);
   showFilterOptions();
